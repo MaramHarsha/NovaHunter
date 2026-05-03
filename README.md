@@ -24,7 +24,14 @@ bash installer that stands up the whole stack on a bare Ubuntu box.
 
 ## Contributing
 
-Contributions are welcome. Please open [issues](https://github.com/MaramHarsha/NovaHunter/issues) for bugs or ideas, or submit a [pull request](https://github.com/MaramHarsha/NovaHunter/pulls) with a short description of the change and how you tested it.
+**NovaHunter is open for contributors.** Bug fixes, docs, dashboard UX, API
+endpoints, deploy hardening, and tests are all in scope—open an issue first
+for larger changes so we can align on direction.
+
+Please open [issues](https://github.com/MaramHarsha/NovaHunter/issues) for
+bugs or ideas, or submit a [pull request](https://github.com/MaramHarsha/NovaHunter/pulls)
+with a short description of the change and how you tested it. For local dev
+setup (Python, Docker, `uv`, pre-commit), see [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ---
 
