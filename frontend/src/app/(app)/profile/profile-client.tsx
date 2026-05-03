@@ -424,8 +424,8 @@ export default function ProfileClient() {
     const secret = generateSecret(20);
     const url = otpauthUrl({
       secret,
-      issuer: "NeoHunter",
-      account: profile.email || "user@neohunter.local",
+      issuer: "NovaHunter",
+      account: profile.email || "user@novahunter.local",
     });
     const qr = await QRCode.toDataURL(url, { margin: 1, width: 256 });
     setEnrollSecret(secret);
@@ -490,7 +490,7 @@ export default function ProfileClient() {
     const codes = twofa.recoveryCodes ?? enrollCodes;
     if (codes.length === 0) return;
     const text = [
-      `NeoHunter recovery codes for ${profile.email}`,
+      `NovaHunter recovery codes for ${profile.email}`,
       `Generated: ${new Date().toUTCString()}`,
       "",
       ...codes,
@@ -554,7 +554,7 @@ export default function ProfileClient() {
     <>
       <PageHeader
         title="Profile & account"
-        description="Manage how you appear in NeoHunter, your security settings, API access, and notifications."
+        description="Manage how you appear in NovaHunter, your security settings, API access, and notifications."
       />
 
       <div className="mb-4 flex items-center gap-4 rounded-xl border border-border bg-surface/60 p-4">
@@ -961,7 +961,7 @@ export default function ProfileClient() {
             <CardHeader>
               <CardTitle>Personal API keys</CardTitle>
               <CardDescription>
-                Use these to authenticate the NeoHunter CLI or automations against
+                Use these to authenticate the NovaHunter CLI or automations against
                 this workspace. Each key inherits your role. See the{" "}
                 <a href="/docs" className="text-primary underline-offset-2 hover:underline">
                   API documentation

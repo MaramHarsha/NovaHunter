@@ -9,7 +9,7 @@ type Line =
   | { kind: "blank" };
 
 const SCRIPT: Line[] = [
-  { kind: "prompt", text: "neohunter run --target https://api.acme.com --mode standard" },
+  { kind: "prompt", text: "novahunter run --target https://api.acme.com --mode standard" },
   { kind: "out", text: "✓ Workspace isolated (sandbox_id=sb_7f2a)", tone: "ok" },
   { kind: "out", text: "→ spawning HunterAgent(root) …", tone: "muted" },
   { kind: "blank" },
@@ -112,7 +112,7 @@ export function AttackTerminal() {
         <span className="h-2.5 w-2.5 rounded-full bg-emerald-400/80" />
         <div className="ml-3 flex items-center gap-1.5 text-[11px] text-muted-foreground">
           <CircleDot className="h-3 w-3 text-emerald-400 animate-pulse-dot" />
-          <span className="font-mono">neohunter — live scan · run-aurora-01</span>
+          <span className="font-mono">novahunter — live scan · run-aurora-01</span>
         </div>
         <div className="ml-auto hidden gap-2 text-[10px] font-mono text-muted-foreground md:flex">
           <span className="rounded border border-border px-1.5 py-0.5">sandbox</span>

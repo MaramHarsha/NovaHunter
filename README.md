@@ -114,13 +114,46 @@ the same way — NovaHunter extends the project, it does not replace it.
 
 ---
 
-## Quick start — self-host on Ubuntu in one command
+## Quick start — self-host on Ubuntu
 
 Fresh Ubuntu 22.04 / 24.04 (or Debian 12+) VPS with a public IP is all you
 need. No domain, no TLS cert, no LLM key required up front.
 
+### Run `scripts/setup.sh` (one-shot installer)
+
+[`scripts/setup.sh`](scripts/setup.sh) is a **single bash script** that installs Docker if needed,
+writes `deploy/.env`, runs preflight checks, and brings up **frontend + API +
+Postgres + Redis + Caddy** via `docker compose`. It must run **inside a full
+clone** of this repository (it does not `git clone` for you — it needs
+`deploy/docker-compose.yml` on disk).
+
+**Steps on the VPS:**
+
+1. SSH into the server.
+2. Install Git if you do not have it: `sudo apt update && sudo apt install -y git`
+3. Clone and enter the repo:
+   ```bash
+   git clone https://github.com/MaramHarsha/NovaHunter.git
+   cd NovaHunter
+   ```
+4. Run the installer **as root** (it will call `docker` and write under `deploy/`):
+   ```bash
+   sudo bash scripts/setup.sh
+   ```
+
+**Useful options** (see also `sudo bash scripts/setup.sh --help`):
+
+| Flag / env | Purpose |
+| ---------- | ------- |
+| `--dry-run` | Print actions only; safe on a live box. Same idea: `STRIX_SETUP_DRY_RUN=1`. |
+| `--yes` / `-y` | Non-interactive confirmations for destructive steps. |
+| `--no-backup` | Skip backup of existing `deploy/.env` / Postgres before redeploy. |
+| `NOVA_HTTP_PORT=8080` | Publish Caddy on a port other than **80** (e.g. `8080`). |
+
+**One line** (clone + install), if Git is already installed:
+
 ```bash
-curl -fsSL https://raw.githubusercontent.com/MaramHarsha/NovaHunter/main/scripts/setup.sh | sudo bash
+git clone https://github.com/MaramHarsha/NovaHunter.git && cd NovaHunter && sudo bash scripts/setup.sh
 ```
 
 What happens in ~5 minutes:
@@ -140,13 +173,6 @@ What happens in ~5 minutes:
 
 Browse to `http://<your-vps-ip>/`, sign in, and configure models in
 **Settings → LLM** or **Settings → Advanced LLM**.
-
-> The setup script expects to run from an existing checkout (it does not clone the repo for you).
-> ```bash
-> git clone https://github.com/MaramHarsha/NovaHunter.git
-> cd NovaHunter
-> sudo bash scripts/setup.sh
-> ```
 
 See **[docs/INSTALL_UBUNTU.md](docs/INSTALL_UBUNTU.md)** for the full guide
 (manual install, HTTPS enablement, backups, `ufw`, troubleshooting).

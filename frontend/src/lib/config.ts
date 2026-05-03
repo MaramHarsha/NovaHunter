@@ -1,9 +1,9 @@
 export const config = {
-  appName: process.env.NEXT_PUBLIC_APP_NAME ?? "NeoHunter",
+  appName: process.env.NEXT_PUBLIC_APP_NAME ?? "NovaHunter",
   tagline:
     process.env.NEXT_PUBLIC_APP_TAGLINE ?? "AI-native offensive security control plane",
-  brandDomain: process.env.NEXT_PUBLIC_BRAND_DOMAIN ?? "neohunter.ai",
-  apiHost: process.env.NEXT_PUBLIC_API_HOST ?? "https://api.neohunter.ai",
+  brandDomain: process.env.NEXT_PUBLIC_BRAND_DOMAIN ?? "novahunter.ai",
+  apiHost: process.env.NEXT_PUBLIC_API_HOST ?? "https://api.novahunter.ai",
   upstream: {
     name: "Strix Agent",
     repoUrl: process.env.NEXT_PUBLIC_UPSTREAM_REPO_URL ?? "https://github.com/usestrix/strix",

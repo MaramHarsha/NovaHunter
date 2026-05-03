@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "API Reference",
-  description: "Official REST API documentation for the NeoHunter security platform.",
+  description: "Official REST API documentation for the NovaHunter security platform.",
 };
 
 export default function DocsLayout({ children }: { children: React.ReactNode }) {

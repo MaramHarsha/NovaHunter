@@ -165,7 +165,7 @@ export default function LandingPage() {
             </Link>
           </div>
           <div className="mt-8 flex flex-wrap items-center gap-4">
-            <CopyCommand command="curl -sSL https://neohunter.ai/install | bash" />
+            <CopyCommand command="curl -sSL https://novahunter.ai/install | bash" />
             <div className="flex items-center gap-2 text-xs text-muted-foreground">
               <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400" />
               One command. Sandbox-isolated. Deploys anywhere.
@@ -409,7 +409,7 @@ export default function LandingPage() {
                 </Link>
               </div>
               <div className="mt-6 flex items-center justify-center">
-                <CopyCommand command="curl -sSL https://neohunter.ai/install | bash" />
+                <CopyCommand command="curl -sSL https://novahunter.ai/install | bash" />
               </div>
             </div>
           </div>
@@ -429,7 +429,7 @@ export default function LandingPage() {
               <Link href="/sign-in" className="hover:text-foreground">Sign in</Link>
               <Link href="/sign-up" className="hover:text-foreground">Sign up</Link>
               <Link href="/docs" className="hover:text-foreground">API</Link>
-              <a href="mailto:hello@neohunter.ai" className="hover:text-foreground">
+              <a href="mailto:hello@novahunter.ai" className="hover:text-foreground">
                 Contact
               </a>
             </div>

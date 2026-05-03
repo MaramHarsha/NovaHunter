@@ -30,7 +30,7 @@ import { TryIt } from "./try-it";
 import { GROUPS, type Endpoint, type Group, type Method } from "./endpoints";
 
 const BASE_URL = `${config.apiHost}/v1`;
-const ENV_VAR = "NEOHUNTER_API_KEY";
+const ENV_VAR = "NOVAHUNTER_API_KEY";
 
 /* ──────────────────────────────────────────────────────────────────────────
  * Page
@@ -218,7 +218,7 @@ export default function DocsPage() {
                     <span className="ml-auto font-mono">quick-start</span>
                   </div>
                   <pre className="overflow-x-auto font-mono text-[11px] leading-relaxed text-foreground/90 scrollbar-thin">
-                    <code>{`$ export ${ENV_VAR}=neohunter_live_sk_...
+                    <code>{`$ export ${ENV_VAR}=novahunter_live_sk_...
 $ curl ${BASE_URL}/runs \\
     -H "Authorization: Bearer $${ENV_VAR}"
 {
@@ -266,7 +266,7 @@ $ curl ${BASE_URL}/runs \\
             </p>
             <CodeBlock
               language="http"
-              code={`Authorization: Bearer neohunter_live_sk_...`}
+              code={`Authorization: Bearer novahunter_live_sk_...`}
             />
             <ul className="mt-4 list-disc space-y-1 pl-5 text-sm text-muted-foreground">
               <li>Keys are scoped to a single workspace.</li>
