@@ -2,11 +2,15 @@
 
 # NovaHunter
 
-### Self-hosted, AI-driven offensive-security control plane.
+### Self-hosted, SaaS-style offensive-security control plane.
 
-NovaHunter turns autonomous hacker agents into a team you can run on your
-own VPS — with a full web dashboard, a REST + websocket API, and a single
-bash installer that stands up the whole stack on a bare Ubuntu box.
+NovaHunter is a **multi-tenant SaaS-style** product: people work inside
+**organizations** (tenants), and both the web dashboard and API enforce
+**role-based access** within those boundaries — plus an optional
+cross-tenant operator role for platform administration. You still deploy
+the stack on **your own** VPS or cluster so runs, findings, and secrets stay
+on infrastructure you control — with a full web UI, a REST + websocket API,
+and a single bash installer for a bare Ubuntu box.
 
 <br/>
 
@@ -72,6 +76,28 @@ the same way — NovaHunter extends the project, it does not replace it.
 | Deploy      | docker compose · Caddy · Postgres 16 · Redis 7 | `deploy/` |
 | Installer   | Pure bash, idempotent, non-interactive | `scripts/setup.sh` |
 | Docs        | Ubuntu install guide · API reference   | `docs/`            |
+
+---
+
+## Organizations & roles (SaaS model)
+
+**Organizations** are the tenant boundary: members of one org see that org’s
+runs, findings, and settings. With Clerk enabled, JWT claims carry org
+membership; the backend maps Clerk’s organization roles into the internal
+roles below (for example, Clerk’s `org:member` maps to **viewer**, and
+`org:owner` maps to **admin**).
+
+| Role | Scope | What it can do |
+| ---- | ----- | ---------------- |
+| **Viewer** | Own organization | Read-only access to dashboards, runs, findings, and reports. |
+| **Analyst** | Own organization | Everything **viewer** can do, plus creating and stopping runs and sending messages to agents. |
+| **Admin** | Own organization | Full access scoped to that organization (team and org-level configuration the product exposes to admins). |
+| **Platform admin** | Cross-tenant | Platform operator: cross-org visibility, support-style actions, LLM routing, audit views — actions are **fully audited**. Granted via configured admin emails or user IDs (see environment docs), not ordinary org membership alone. |
+
+In the dashboard, your effective role comes from the backend
+(`GET /api/auth/whoami`), not from stale client defaults — especially for
+**platform admin**, which may be elevated server-side from `STRIX_ADMIN_EMAILS` /
+`STRIX_ADMIN_USER_IDS` (or equivalent deployment settings).
 
 ---
 
@@ -177,6 +203,30 @@ What happens in ~5 minutes:
        API       : http://<your-vps-ip>/api/
        Health    : http://<your-vps-ip>/api/health
    ```
+
+**What to keep:** After `setup.sh` finishes, your deployment’s “source of
+truth” for secrets and tuning is **`deploy/.env`** (Postgres password,
+`STRIX_MASTER_KEY`, Clerk keys, `STRIX_ADMIN_*`, LLM variables, `STRIX_ENV`,
+`DOCKER_GID`, `NEXT_PUBLIC_*`, ports, and everything else you add). Back it
+up off-box. The stack also stores data in **Docker named volumes** (Postgres,
+run workspace, Redis, Caddy) — protect those the same way you would a database
+disk. If you customize routing, keep your edited **`deploy/Caddyfile`** (or
+document how you diverged from the repo).
+
+**When you change `deploy/.env`:** Variables are wired through Compose into
+containers, but the **frontend image bakes `NEXT_PUBLIC_*` values at build
+time** — they are not picked up from runtime env alone. From the repo root:
+
+```bash
+cd deploy
+docker compose up -d --build
+```
+
+That rebuilds images as needed and recreates services so new values apply.
+(If you only changed API/runtime secrets and not any `NEXT_PUBLIC_*` build
+args, `docker compose up -d --force-recreate api` is often enough — when in
+doubt, use `--build`.) More detail: [Preserving state and reloading after
+`.env` changes](#preserving-state-and-reloading-after-env-changes).
 
 Browse to `http://<your-vps-ip>/`, sign in, and configure models in
 **Settings → LLM** or **Settings → Advanced LLM**.
@@ -383,6 +433,35 @@ NovaHunter/
 ## Environment & setup
 
 **Do not commit secrets.** The repo ignores `deploy/.env` and generic `.env` files. Only ever commit the templates (`deploy/.env.example`, `frontend/.env.example`).
+
+### Preserving state and reloading after `.env` changes
+
+`scripts/setup.sh` clones the repo layout, writes **`deploy/.env`**, and runs
+`docker compose up -d --build` — it does **not** replace your need to treat
+that file and volumes as long-lived state.
+
+| Keep / back up | Why |
+| ---------------- | --- |
+| **`deploy/.env`** | Holds every secret and deploy knob the compose file reads. Losing it means new random DB passwords (unless you restore from backup) and re-entering Clerk, LLM, and admin settings. |
+| **Docker volumes** (`strix_pgdata`, `strix_runs`, `strix_redis`, Caddy data/config) | Application data, scan artifacts, and TLS material live here — not in the git tree. |
+| **Installer backups** | Re-running `setup.sh` may write timestamped backups of `.env` (unless you pass `--no-backup`); still keep your own copies. |
+| **Custom `deploy/Caddyfile` or compose overrides** | If you changed them on the server, they are not in git unless you maintain a fork or config repo. |
+
+After **any** edit to `deploy/.env`, apply it from the **`deploy/`** directory:
+
+```bash
+cd deploy
+docker compose up -d --build
+```
+
+Use **`--build`** whenever you change **`NEXT_PUBLIC_*`** (Clerk publishable
+key, API base URL, demo flag, app name) — the Next.js client bundle is
+produced at image build time (`deploy/docker-compose.yml` documents this).
+Other variables (API/Clerk server secrets, `STRIX_LLM`, database URL pieces,
+etc.) are passed at container **runtime**; recreating the `api` (and
+sometimes `frontend`) service is enough, but `docker compose up -d --build`
+is the straightforward, safe default so you do not guess which service needs a
+rebuild.
 
 ### Full stack (Docker on Linux / VPS)
 
